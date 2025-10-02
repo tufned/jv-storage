@@ -6,10 +6,12 @@ public class StorageImpl<K, V> implements Storage<K, V> {
     private static final int SIZE = 10;
     private final K[] keys;
     private final V[] values;
+    private int currentSize;
 
     public StorageImpl() {
         this.keys = (K[]) new Object[SIZE];
         this.values = (V[]) new Object[SIZE];
+        this.currentSize = 0;
     }
 
     @Override
@@ -20,10 +22,10 @@ public class StorageImpl<K, V> implements Storage<K, V> {
             return;
         }
 
-        int currentSize = size();
         if (currentSize < SIZE) {
             keys[currentSize] = key;
             values[currentSize] = value;
+            currentSize++;
         }
     }
 
@@ -38,17 +40,11 @@ public class StorageImpl<K, V> implements Storage<K, V> {
 
     @Override
     public int size() {
-        int length = 0;
-        for (int i = 0; i < SIZE; i++) {
-            if (keys[i] != null || values[i] != null) {
-                length++;
-            }
-        }
-        return length;
+        return currentSize;
     }
 
     private int findKeyIndex(K key) {
-        for (int i = 0; i < SIZE; i++) {
+        for (int i = 0; i < currentSize; i++) {
             K itemKey = keys[i];
             if (itemKey == key || (itemKey != null && itemKey.equals(key))) {
                 return i;
